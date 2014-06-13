@@ -1,4 +1,4 @@
-package projectpintail.twig.beans;
+package twig.beans;
 
 import java.io.Serializable;
 import java.util.List;

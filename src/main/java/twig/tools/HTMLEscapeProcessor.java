@@ -1,4 +1,4 @@
-package projectpintail.twig.tools;
+package twig.tools;
 
 public class HTMLEscapeProcessor {
 

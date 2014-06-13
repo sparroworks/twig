@@ -1,4 +1,8 @@
-package projectpintail.twig;
+package twig;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -34,5 +38,13 @@ public class AppTest
     public void testApp()
     {
         assertTrue( true );
+        try {
+			BufferedWriter toWriter = new BufferedWriter(new FileWriter(Twig.TWIGBOARD));
+			toWriter.write("more blah");
+			toWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

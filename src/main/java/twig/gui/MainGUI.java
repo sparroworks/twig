@@ -1,4 +1,4 @@
-package projectpintail.twig.gui;
+package twig.gui;
 
 
 import java.awt.Color;

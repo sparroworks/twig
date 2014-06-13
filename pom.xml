@@ -91,8 +91,8 @@
 						</goals>
 						<configuration>
 							<headerType>gui</headerType>
-							<jar>${project.build.directory}/${artifactId}-${version}.one-jar.jar</jar>
-							<outfile>${project.build.directory}/${artifactId}-${version}.exe</outfile>
+							<jar>${project.build.directory}/${project.artifactId}-${project.version}.one-jar.jar</jar>
+							<outfile>${project.build.directory}/${project.artifactId}-${project.version}.exe</outfile>
 							<downloadUrl>http://java.com/download</downloadUrl>
 							<classPath>
 								<mainClass>com.simontuffs.onejar.Boot</mainClass>
@@ -107,13 +107,13 @@
 								<fileVersion>1.0.0.0</fileVersion>
 								<txtFileVersion>${project.version}</txtFileVersion>
 								<fileDescription>${project.name}</fileDescription>
-								<copyright>2013 Twig</copyright>
+								<copyright>2014 Twig</copyright>
 								<productVersion>1.0.0.0</productVersion>
 								<txtProductVersion>1.0.0.0</txtProductVersion>
 								<productName>${project.name}</productName>
 								<companyName>pintail</companyName>
 								<internalName>pintail</internalName>
-								<originalFilename>${artifactId}-${version}.exe</originalFilename>
+								<originalFilename>${project.artifactId}-${project.version}.exe</originalFilename>
 							</versionInfo>
 						</configuration>
 					</execution>

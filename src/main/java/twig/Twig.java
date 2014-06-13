@@ -1,12 +1,17 @@
-package projectpintail.twig;
+package twig;
 
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,11 +23,12 @@ import java.util.prefs.Preferences;
 
 import javax.swing.SwingUtilities;
 
-import projectpintail.twig.beans.Diction;
-import projectpintail.twig.beans.Entry;
-import projectpintail.twig.beans.Meaning;
-import projectpintail.twig.gui.MainGUI;
-import projectpintail.twig.tools.HTMLEscapeProcessor;
+import twig.beans.Diction;
+import twig.beans.Entry;
+import twig.beans.Meaning;
+import twig.gui.MainGUI;
+import twig.tools.HTMLEscapeProcessor;
+
 
 import com.google.gson.Gson;
 import com.melloware.jintellitype.HotkeyListener;
@@ -31,11 +37,14 @@ import com.melloware.jintellitype.JIntellitype;
 public class Twig implements HotkeyListener{
 
 JIntellitype jType = null;
-	
+public static String TWIGBOARD = "F:\\Gen3_Automation\\Users\\arajagox\\twigboard.txt";
+//public static String TWIGBOARD = "C:\\twigboard.txt";
 
 	Twig() {
 		jType = JIntellitype.getInstance();
 		jType.registerHotKey(1, JIntellitype.MOD_CONTROL, (int)'0');
+		jType.registerHotKey(2, JIntellitype.MOD_CONTROL, (int)'8');
+		jType.registerHotKey(3, JIntellitype.MOD_CONTROL, (int)'9');
 		JIntellitype.getInstance().addHotKeyListener(this);
 	}
 	
@@ -75,25 +84,28 @@ JIntellitype jType = null;
 	}
 	
 	public void onHotKey(int id) {
-		if(id == 1){
-			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			Transferable contents = clipboard.getContents(null);
-			String word = null;
-			String error = "Unable to obtain copied content";
-			boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-			if (hasTransferableText) {
-				try {
-			        word = (String)contents.getTransferData(DataFlavor.stringFlavor);
-			    }
-				catch (UnsupportedFlavorException ex){
-					word = null;
-					error = "Unsupported format of copied content";
-				}
-				catch(IOException e){
-					word = null;
-					error = "IO Error in getting copied content";
-				}
+		//Get text from clip board
+		
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		Transferable contents = clipboard.getContents(null);
+		String text = null;
+		String error = "Unable to obtain copied content";
+		boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+		if (hasTransferableText) {
+			try {
+		        text = (String)contents.getTransferData(DataFlavor.stringFlavor);
+		    }
+			catch (UnsupportedFlavorException ex){
+				text = null;
+				error = "Unsupported format of copied content";
 			}
+			catch(IOException e){
+				text = null;
+				error = "IO Error in getting copied content";
+			}
+		}
+		if(id == 1){
+			String word = text;
 			List<String> meanings = new ArrayList<String>();
 			if(word != null){
 				word = word.trim().toLowerCase();
@@ -135,6 +147,46 @@ JIntellitype jType = null;
 			});
 			
 			
+		}
+		if(id == 2){//Copy to twig board file
+			
+			//Write into twig board file
+			if(text != null){
+				
+				try {
+					BufferedWriter toWriter = new BufferedWriter(new FileWriter(Twig.TWIGBOARD));
+					toWriter.write(text);
+					toWriter.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+			}
+		}
+		if(id == 3){//Paste from twig board file
+			//Get text from twig board file
+			BufferedReader fromReader;
+			StringBuffer copiedText = new StringBuffer();
+			try {
+				fromReader = new BufferedReader(new FileReader(Twig.TWIGBOARD));
+			
+			
+			String line = null;
+			while((line=fromReader.readLine()) != null){
+				copiedText.append(line);
+			}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (IOException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+			//Put into clip board
+			StringSelection stringSelection = new StringSelection(copiedText.toString());
+			clipboard.setContents(stringSelection, null);
 		}
 		
 	}
